@@ -1,0 +1,6 @@
+#cboxLoadedContent .elgg-form-seo-edit {
+	width: 600px;
+	height: 600px;
+	overflow-y: auto;
+	padding: 15px;
+}

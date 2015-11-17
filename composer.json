@@ -1,0 +1,21 @@
+{
+	"name": "hypejunction/seo",
+	"version": "0.0.0",
+	"type": "elgg-plugin",
+	"description": "SEO Tools",
+	"homepage": "http://hypejunction.com",
+	"keywords": [
+		"elgg", "plugin", "seo", "search engine optimization", "open graph", "twitter cards"
+	],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Ismayil Khayredinov",
+			"email": "info@hypejunction.com"
+		}
+	],
+	"require-dev": {
+		"composer/installers": "1.*"
+	}
+}
+
