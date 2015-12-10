@@ -21,4 +21,4 @@ are migrating your site
 
 ## Acknowledgements
 
-Plugin has been sponsored by Bodyology Virtual Campus http://bodyology.co.uk/
+Plugin has been sponsored by Bodyology Virtual Campus http://bodyologymassagecourses.co.uk/
