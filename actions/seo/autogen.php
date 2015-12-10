@@ -12,10 +12,8 @@ foreach ($entities as $entity) {
 	$i++;
 	$data = seo_prepare_entity_data($entity);
 	if ($data) {
-		if (empty($data['admin_defined'])) {
-			if (seo_save_data($data)) {
-				$s++;
-			}
+		if (seo_save_data($data)) {
+			$s++;
 		}
 	}
 }

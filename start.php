@@ -78,9 +78,7 @@ function seo_page_handler($segments) {
 function seo_update_entity($event, $type, $entity) {
 	$data = seo_prepare_entity_data($entity);
 	if ($data) {
-		if (empty($data['admin_defined'])) {
-			seo_save_data($data);
-		}
+		seo_save_data($data);
 	}
 }
 

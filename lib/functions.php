@@ -121,31 +121,53 @@ function seo_prepare_entity_data(\ElggEntity $entity) {
 			break;
 	}
 
-	$sef_data = [
+	$sef_data = seo_get_data($entity->getURL());
+	if (!is_array($sef_data)) {
+		$sef_data = array();
+	}
+
+	$entity_sef_data = [
 		'path' => $path,
-		'sef_path' => $sef_path,
 		'title' => $entity->getDisplayName(),
 		'description' => elgg_get_excerpt($entity->description),
 		'keywords' => is_array($entity->tags) ? implode(',', $entity->tags) : $entity->tags,
 		'guid' => $entity->guid,
 	];
 
-	$sef_data['metatags'] = elgg_trigger_plugin_hook('metatags', 'discovery', [
-		'entity' => $entity,
-		'url' => elgg_normalize_url($sef_path),
-			], []);
-
 	if ($entity->guid != $entity->owner_guid) {
 		$owner = $entity->getOwnerEntity();
 		if ($owner) {
-			$sef_data['owner'] = seo_prepare_entity_data($owner);
+			$entity_sef_data['owner'] = seo_prepare_entity_data($owner);
 		}
 	}
 
 	if ($entity->guid != $entity->container_guid && $entity->owner_guid != $entity->container_guid) {
 		$container = $entity->getContainerEntity();
 		if ($container) {
-			$sef_data['container'] = seo_prepare_entity_data($container);
+			$entity_sef_data['container'] = seo_prepare_entity_data($container);
+		}
+	}
+
+	if (empty($sef_data['admin_defined'])) {
+		$sef_data = array_merge($sef_data, $entity_sef_data);
+	} else {
+		foreach ($entity_sef_data as $key => $value) {
+			if (empty($sef_data[$key])) {
+				$sef_data[$key] = $value;
+			}
+		}
+	}
+
+	$entity_sef_metatags = elgg_trigger_plugin_hook('metatags', 'discovery', [
+		'entity' => $entity,
+		'url' => elgg_normalize_url($sef_path),
+			], []);
+
+	if (!empty($entity_sef_metatags)) {
+		foreach ($entity_sef_metatags as $key => $value) {
+			if (empty($sef_data['admin_defined']) || empty($sef_data['metatags'][$key])) {
+				$sef_data['metatags'][$key] = $value;
+			}
 		}
 	}
 
