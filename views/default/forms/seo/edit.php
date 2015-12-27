@@ -14,7 +14,7 @@ echo elgg_view_input('hidden', [
 	'value' => true,
 ]);
 
-$path = elgg_extract('path', $data, parse_url($uri, PHP_URL_PATH));
+$path = elgg_extract('path', $data, seo_get_path($uri));
 echo elgg_view_input('text', [
 	'name' => 'seo[path]',
 	'value' => $path,

@@ -21,6 +21,22 @@ function seo_get_sef_url($url) {
 }
 
 /**
+ * Extracts request path relative to site installation
+ * 
+ * @note We can't rely on full request path, because Elgg can be installed in a subdirectory
+ * 
+ * @param string $url URL
+ * @return string|false
+ */
+function seo_get_path($url) {
+	$url = elgg_normalize_url($url);
+	$site_url = elgg_get_site_url();
+	if (0 !== strpos($url, $site_url)) {
+		return false;
+	}
+	return '/' . substr($url, strlen($site_url));
+}
+/**
  * Get URL data
  *
  * @param string $url URL
@@ -28,11 +44,10 @@ function seo_get_sef_url($url) {
  */
 function seo_get_data($url) {
 
-	$url = elgg_normalize_url($url);
-	if (parse_url($url, PHP_URL_HOST) != parse_url(elgg_get_site_url(), PHP_URL_HOST)) {
+	$path = seo_get_path($url);
+	if (!$path) {
 		return false;
 	}
-	$path = parse_url($url, PHP_URL_PATH);
 	$hash = sha1($path);
 
 	$site = elgg_get_site_entity();
@@ -97,7 +112,7 @@ function seo_save_data($data) {
  * @return array|false
  */
 function seo_prepare_entity_data(\ElggEntity $entity) {
-	$path = parse_url($entity->getURL(), PHP_URL_PATH);
+	$path = seo_get_path($entity->getURL());
 	if (!$path || $path == '/') {
 		return false;
 	}
