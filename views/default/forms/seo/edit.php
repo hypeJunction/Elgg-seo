@@ -15,9 +15,13 @@ echo elgg_view_input('hidden', [
 ]);
 
 $path = elgg_extract('path', $data, seo_get_path($uri));
-echo elgg_view_input('text', [
+echo elgg_view_input('hidden', [
 	'name' => 'seo[path]',
 	'value' => $path,
+]);
+echo elgg_view_input('text', [
+	'value' => $path,
+	'disabled' => true,
 	'label' => elgg_echo('seo:path'),
 ]);
 
