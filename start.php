@@ -32,6 +32,8 @@ function seo_init() {
 	elgg_register_plugin_hook_handler('route', 'all', 'seo_route', 1);
 	elgg_register_plugin_hook_handler('head', 'page', 'seo_page_head_setup');
 
+	elgg_register_plugin_hook_handler('page_owner', 'system', 'seo_page_owner_fix');
+
 	elgg_extend_view('elgg.css', 'seo.css');
 	
 	if (elgg_is_admin_logged_in()) {
@@ -126,8 +128,11 @@ function seo_route($hook, $type, $return, $params) {
 	if ($data) {
 		$sef_path = elgg_extract('sef_path', $data);
 		$original_path = elgg_extract('path', $data);
-
+		
 		if (elgg_normalize_url($sef_path) == $url) {
+			// Replace __elgg_uri
+			set_input(\Elgg\Application::GET_PATH_KEY, $original_path);
+
 			$segments = explode('/', trim($original_path, '/'));
 			$identifier = array_shift($segments);
 			return [
@@ -187,4 +192,69 @@ function seo_page_head_setup($hook, $type, $return, $params) {
 	}
 
 	return $return;
+}
+
+/**
+ * Page owner magic relies on current_page_url(), which fails to reflect final route
+ *
+ * @param string $hook   "page_owner"
+ * @param string $type   "system"
+ * @param int    $return Page owner guid
+ * @return int
+ */
+function seo_page_owner_fix($hook, $type, $return) {
+
+	if ($return) {
+		return;
+	}
+
+	$ia = elgg_set_ignore_access(true);
+
+	$data = seo_get_data(current_page_url());
+	if (empty($data['path'])) {
+		return;
+	}
+
+	// ignore root and query
+	$uri = elgg_normalize_url($data['path']);
+
+	$path = str_replace(elgg_get_site_url(), '', $uri);
+	$path = trim($path, "/");
+	if (strpos($path, "?")) {
+		$path = substr($path, 0, strpos($path, "?"));
+	}
+
+	// @todo feels hacky
+	$segments = explode('/', $path);
+	if (isset($segments[1]) && isset($segments[2])) {
+		switch ($segments[1]) {
+			case 'owner':
+			case 'friends':
+				$user = get_user_by_username($segments[2]);
+				if ($user) {
+					elgg_set_ignore_access($ia);
+					return $user->getGUID();
+				}
+				break;
+			case 'view':
+			case 'edit':
+				$entity = get_entity($segments[2]);
+				if ($entity) {
+					elgg_set_ignore_access($ia);
+					return $entity->getContainerGUID();
+				}
+				break;
+			case 'add':
+			case 'group':
+				$entity = get_entity($segments[2]);
+				if ($entity) {
+					elgg_set_ignore_access($ia);
+					return $entity->getGUID();
+				}
+				break;
+		}
+	}
+
+	elgg_set_ignore_access($ia);
+
 }
