@@ -143,6 +143,7 @@ function seo_prepare_entity_data(\ElggEntity $entity) {
 
 	$entity_sef_data = [
 		'path' => $path,
+		'sef_path' => $sef_path,
 		'title' => $entity->getDisplayName(),
 		'description' => elgg_get_excerpt($entity->description),
 		'keywords' => is_array($entity->tags) ? implode(',', $entity->tags) : $entity->tags,
