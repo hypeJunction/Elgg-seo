@@ -8,6 +8,7 @@
  */
 function seo_get_sef_url($url) {
 
+	$url = elgg_normalize_url($url);
 	$data = seo_get_data($url);
 	if (!$data) {
 		return $url;
