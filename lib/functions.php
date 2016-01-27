@@ -35,8 +35,12 @@ function seo_get_path($url) {
 	if (0 !== strpos($url, $site_url)) {
 		return false;
 	}
-	return '/' . substr($url, strlen($site_url));
+	$path = '/' . substr($url, strlen($site_url));
+	
+	// strip query elements
+	return parse_url($path, PHP_URL_PATH);
 }
+
 /**
  * Get URL data
  *
