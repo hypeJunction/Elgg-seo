@@ -1,3 +1,13 @@
+<a name="1.1.1"></a>
+## [1.1.1](https://github.com/hypeJunction/Elgg-seo/compare/1.1.0...v1.1.1) (2016-03-09)
+
+
+### Bug Fixes
+
+* **meta:** OGP tags should use property attribute ([5193dab](https://github.com/hypeJunction/Elgg-seo/commit/5193dab))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/hypeJunction/Elgg-seo/compare/1.0.1...v1.1.0) (2016-01-27)
 
