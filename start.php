@@ -187,7 +187,7 @@ function seo_page_head_setup($hook, $type, $return, $params) {
 			$name_parts = explode(':', $name);
 			$namespace = array_shift($name_parts);
 
-			if (in_array($namespace, array('og', 'article', 'profile', 'book', 'music', 'video', 'profile', 'website'))) {
+			if (in_array($namespace, array('og', 'fb', 'article', 'profile', 'book', 'music', 'video', 'profile', 'website'))) {
 				// OGP tags use 'property=""' attribute
 				$return['metas'][$name] = [
 					'property' => $name,
