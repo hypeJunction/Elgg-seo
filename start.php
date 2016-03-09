@@ -35,7 +35,7 @@ function seo_init() {
 	elgg_register_plugin_hook_handler('page_owner', 'system', 'seo_page_owner_fix');
 
 	elgg_extend_view('elgg.css', 'seo.css');
-	
+
 	if (elgg_is_admin_logged_in()) {
 		elgg_register_menu_item('extras', array(
 			'name' => 'seo',
@@ -128,7 +128,7 @@ function seo_route($hook, $type, $return, $params) {
 	if ($data) {
 		$sef_path = elgg_extract('sef_path', $data);
 		$original_path = elgg_extract('path', $data);
-		
+
 		if (elgg_normalize_url($sef_path) == $url) {
 			// Replace __elgg_uri
 			set_input(\Elgg\Application::GET_PATH_KEY, $original_path);
@@ -184,10 +184,21 @@ function seo_page_head_setup($hook, $type, $return, $params) {
 			if (!$content) {
 				continue;
 			}
-			$return['metas'][$name] = [
-				'name' => $name,
-				'content' => $content,
-			];
+			$name_parts = explode(':', $name);
+			$namespace = array_shift($name_parts);
+
+			if (in_array($namespace, array('og', 'article', 'profile', 'book', 'music', 'video', 'profile', 'website'))) {
+				// OGP tags use 'property=""' attribute
+				$return['metas'][$name] = [
+					'property' => $name,
+					'content' => $content,
+				];
+			} else {
+				$return['metas'][$name] = [
+					'name' => $name,
+					'content' => $content,
+				];
+			}
 		}
 	}
 
@@ -256,5 +267,4 @@ function seo_page_owner_fix($hook, $type, $return) {
 	}
 
 	elgg_set_ignore_access($ia);
-
 }
