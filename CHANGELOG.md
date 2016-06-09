@@ -1,3 +1,14 @@
+<a name="1.1.2"></a>
+## [1.1.2](https://github.com/hypeJunction/Elgg-seo/compare/1.1.1...v1.1.2) (2016-06-09)
+
+
+### Bug Fixes
+
+* **meta:** add fb namespace to og tags ([53332eb](https://github.com/hypeJunction/Elgg-seo/commit/53332eb))
+* **sef:** only registered entity types get a SEF url ([f54938b](https://github.com/hypeJunction/Elgg-seo/commit/f54938b))
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://github.com/hypeJunction/Elgg-seo/compare/1.1.0...v1.1.1) (2016-03-09)
 
