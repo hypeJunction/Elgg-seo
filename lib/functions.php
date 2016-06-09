@@ -126,21 +126,44 @@ function seo_prepare_entity_data(\ElggEntity $entity) {
 	switch ($type) {
 
 		case 'user' :
-			$sef_path = "/profile/$entity->username";
+			if (elgg_is_active_plugin('profile')) {
+				$sef_path = "/profile/$entity->username";
+			}
 			break;
 
 		case 'group' :
-		case 'object' :
-			$prefix = $type;
 			$subtype = $entity->getSubtype();
-			if ($subtype) {
-				$prefix = $subtype;
+			$registered = (array) get_registered_entity_types('group');
+			if (!$subtype || in_array($subtype, $registered)) {
+				if ($subtype && elgg_language_key_exists("item:group:$subtype", 'en')) {
+					$prefix = elgg_get_friendly_title(elgg_echo("item:group:$subtype", array(), 'en'));
+				} else {
+					$prefix = elgg_get_friendly_title(elgg_echo('item:group', array(), 'en'));
+				}
+				$friendly_title = elgg_get_friendly_title($entity->getDisplayName() ? : '');
+				$sef_path = "/$prefix/{$entity->guid}-{$friendly_title}";
 			}
-			$friendly_title = elgg_get_friendly_title($entity->getDisplayName() ? : '');
-			$sef_path = "/$prefix/{$entity->guid}-{$friendly_title}";
+			break;
+
+		case 'object' :
+			$subtype = $entity->getSubtype();
+			$registered = (array) get_registered_entity_types('object');
+			if (in_array($subtype, $registered)) {
+				if (elgg_language_key_exists("item:object:$subtype", 'en')) {
+					$prefix = elgg_get_friendly_title(elgg_echo("item:object:$subtype", array(), 'en'));
+				} else {
+					$prefix = elgg_get_friendly_title($subtype);
+				}
+				$friendly_title = elgg_get_friendly_title($entity->getDisplayName() ? : '');
+				$sef_path = "/$prefix/{$entity->guid}-{$friendly_title}";
+			}
 			break;
 	}
 
+	if (!$sef_path) {
+		$sef_path = $path;
+	}
+	
 	$sef_data = seo_get_data($entity->getURL());
 	if (!is_array($sef_data)) {
 		$sef_data = array();
